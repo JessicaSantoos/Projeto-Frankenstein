@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'title' %}Entre em Contato{% endblock 'title'%}
+
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'home/css/entre_em_contato.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/navbar.css' %}">
+{% endblock 'head' %}
+
+{% block 'body' %}
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'login' %}">
+                <img src="{% static 'geral/img/logo2.gif' %}" alt="Logo" width="50" height="50" class="d-inline-block align-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'estoque' %}">Estoque</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cadastrar' %}">Cadastrar Produto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'remover' %}">Remover Produto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Reservar Produto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'entre_em_contato' %}">Entre em Contato</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Entre em Contato</h1>
+        <p>Utilize o chat abaixo para tirar dúvidas sobre as funcionalidades do site.</p>
+    
+        <form method="post" action="{% url 'entre_em_contato' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="user_input" class="form-label">Sua pergunta:</label>
+                <input type="text" class="form-control" id="user_input" name="user_input" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+    
+        {% if user_input %}
+        <div class="mt-4">
+            <h2>Você:</h2>
+            <p>{{ user_input }}</p>
+            <h2>Bot:</h2>
+            <p>{{ bot_response }}</p>
+    
+            <form method="post" action="{% url 'entre_em_contato' %}">
+                {% csrf_token %}
+                <input type="hidden" name="send_to_support" value="true">
+                <div class="mb-3">
+                    <label for="user_email" class="form-label">Seu Email:</label>
+                    <input type="email" class="form-control" id="user_email" name="user_email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Mensagem:</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Enviar para Suporte</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+{% endblock 'body' %}

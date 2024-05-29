@@ -1,0 +1,13 @@
+Bem-vindo ao nosso site de controle de estoque!
+
+Funcionalidades disponíveis:
+- Visualizar produtos disponíveis no estoque
+- Adicionar novos produtos ao estoque
+- Remover produtos do estoque
+- Reservar produtos para clientes
+
+Como usar:
+1. Navegue até a aba "Estoque" para visualizar os produtos disponíveis.
+2. Para adicionar um novo produto, clique na aba "Cadastrar Produto" e preencha o formulário.
+3. Para remover um produto, clique na aba "Remover Produto" e siga as instruções.
+4. Para reservar um produto, clique na aba "Reservar Produto" e forneça as informações necessárias.

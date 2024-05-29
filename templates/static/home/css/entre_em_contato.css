@@ -1,0 +1,25 @@
+.container {
+    margin-top: 50px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 10px;
+}
+
+ul li strong {
+    font-weight: bold;
+}
+
+#contact-form {
+    display: none;
+    margin-top: 20px;
+}

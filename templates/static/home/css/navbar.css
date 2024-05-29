@@ -1,0 +1,28 @@
+.container-fluid {
+    background-color: var(--main-color);  /* Cor de fundo do navbar */
+    padding: 10px 25px;  /* Adicionando espaçamento interno à barra de navegação */
+}
+
+.navbar-nav {
+    width: 90%; /* Defina a largura total para que os elementos ocupem toda a largura do navbar */
+    display: flex; /* Use flexbox para alinhar os itens */
+    justify-content: flex-end; /* Alinhe os itens à extremidade direita */
+}
+
+.navbar-nav .nav-item {
+    margin-left: 42px; /* Adicione um espaço à esquerda entre os itens */
+}
+
+.navbar-nav .nav-link {
+    color: #fff;  /* Cor do texto branco */
+    border-bottom: 2px solid transparent;  /* Linha transparente inicialmente */
+    padding-bottom: 5px;  /* Espaçamento abaixo do texto */
+}
+
+.navbar-nav .nav-link:hover {
+    border-bottom-color: #333;  /* Cor da linha ao passar o mouse */
+}
+
+.navbar-brand img {
+    background-color: transparent;  /* Adicionando fundo transparente para o gif */
+}
