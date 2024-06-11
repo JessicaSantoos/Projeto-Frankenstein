@@ -13,6 +13,55 @@ h2 {
     color: #fff;
 }
 
+/* Estilo para o formulário de filtro */
+.filter-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 800px;
+    background-color: var(--main-color);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px; /* Espaçamento entre os itens */
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 15px); /* Largura de 50% menos o espaçamento */
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #4CAF50; /* Cor da borda */
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button.btn-submit {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #4CAF50; /* Cor esverdeada */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px; /* Espaço acima do botão */
+}
+
+button.btn-submit:hover {
+    background-color: #45a049; /* Cor esverdeada mais escura */
+}
+
 /* Estilo para a tabela */
 .table {
     width: 100%;

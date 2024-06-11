@@ -15,12 +15,12 @@
                     <br>
                     <section class="cont-logo">
                         <img class="logo" src="{% static 'geral/img/logo.gif' %}">
-                        <label class="text-logo">Clube das Maes Unidas</label>
+                        <label class="text-logo">Clube das Mães Unidas</label>
                     </section>
                     <hr>
                     
                     <form action="{% url 'login' %}" method="POST">{% csrf_token %}
-                        <h2 class="fonte-destaque1">Logar</h2>
+                        <h2 class="fonte-destaque1">Sistema de Estoque das Mães Unidas</h2>
                         {% if messages %}
                             <br>
                             {% for message in messages %}

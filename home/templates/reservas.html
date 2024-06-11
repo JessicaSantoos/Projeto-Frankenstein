@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static 'home/css/cadastrar.css' %}">
     <link rel="stylesheet" href="{% static 'home/css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/reservas.css' %}">
 {% endblock 'head' %}
 
 {% block 'body' %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'login' %}">
             <img src="{% static 'geral/img/logo2.gif' %}" alt="Logo" width="50" height="50" class="d-inline-block align-top">
@@ -21,16 +21,13 @@
                     <a class="nav-link" href="{% url 'estoque' %}">Estoque</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'reservas' %}">Produtos Reservados</a>
+                    <a class="nav-link" href="{% url 'reservar' %}">Reservar Produto</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'cadastrar' %}">Cadastrar Produto</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'remover' %}">Remover Produto</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'reservar' %}">Reservar Produto</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'entre_em_contato' %}">Entre em Contato</a>
@@ -41,34 +38,39 @@
 </nav>
 
 <div class="container">
-    <h2>Cadastrar Produto</h2>
-    <form method="post">
-        {% csrf_token %}
+    <h2>Produtos Reservados</h2>
+    <form method="GET" class="filter-form">
         <div class="form-row">
             <div class="form-group">
-                <label for="id_nome"><strong>Nome:</strong></label>
-                {{ form.nome }}
+                <label for="produto">Produto:</label>
+                <select name="produto" id="produto">
+                    <option value="">Todos</option>
+                    {% for produto in produtos %}
+                    <option value="{{ produto.id }}" {% if produto.id == request.GET.produto %}selected{% endif %}>{{ produto.nome }}</option>
+                    {% endfor %}
+                </select>
             </div>
-            <div class="form-group">
-                <label for="id_quantidade"><strong>Quantidade:</strong></label>
-                {{ form.quantidade }}
-            </div>
+            <button type="submit" class="btn-submit">Filtrar</button>
         </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="id_descricao"><strong>Descrição:</strong></label>
-                {{ form.descricao }}
-            </div>
-        </div>
-        <button type="submit" class="btn-submit">Cadastrar</button>
     </form>
-
-    <script>
-        {% if messages %}
-            {% for message in messages %}
-                alert("{{ message }}");
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Data da Reserva</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.produto.nome }}</td>
+                <td>{{ reserva.quantidade }}</td>
+                <td>{{ reserva.data_reserva }}</td>
+            </tr>
             {% endfor %}
-        {% endif %}
-    </script>
+        </tbody>
+    </table>
+</div>
 
 {% endblock 'body' %}

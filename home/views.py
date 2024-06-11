@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Produto
+from .models import Produto, Reserva
+from .forms import ReservaForm
 from django.core.mail import send_mail
 from django.contrib import messages
 import openai
@@ -21,6 +22,17 @@ def estoque_view(request):
     produtos = Produto.objects.all()
     return render(request, 'estoque.html', {'produtos': produtos})
 
+# |Tela Estoque de Produtos Reservados
+@login_required
+def reservas_view(request):
+    produto_id = request.GET.get('produto')
+    if produto_id:
+        reservas = Reserva.objects.filter(produto_id=produto_id)
+    else:
+        reservas = Reserva.objects.all()
+    produtos = Produto.objects.all()
+    return render(request, 'reservas.html', {'reservas': reservas, 'produtos': produtos})
+
 # |Tela Cadastro de Produtos
 @login_required
 def cadastrar_view(request):
@@ -30,7 +42,6 @@ def cadastrar_view(request):
             nome = form.cleaned_data['nome']
             quantidade = form.cleaned_data['quantidade']
             
-            # Verifica se o produto já existe no estoque
             produto_existente = Produto.objects.filter(nome=nome).first()
             if produto_existente:
                 produto_existente.quantidade += quantidade
@@ -59,12 +70,10 @@ def remover_view(request):
 
             produto = Produto.objects.get(pk=produto_id)
 
-            # Verifica se a quantidade a ser removida é menor ou igual à quantidade disponível no estoque
             if quantidade <= produto.quantidade:
                 produto.quantidade -= quantidade
                 produto.save()
 
-                # Se a quantidade do produto for zero após a remoção, exclua o produto do banco de dados
                 if produto.quantidade == 0:
                     produto.delete()
                     messages.success(request, f'{quantidade} unidades de {produto.nome} removidas do estoque. O produto foi completamente removido.')
@@ -77,6 +86,36 @@ def remover_view(request):
         form = RemoverProdutoForm()
 
     return render(request, 'remover.html', {'produtos': produtos, 'form': form})
+
+# | Tela Reservar Produto
+@login_required
+def reservar_view(request):
+    if request.method == 'POST':
+        form = ReservaForm(request.POST)
+        if form.is_valid():
+            produto = form.cleaned_data['produto']
+            quantidade = form.cleaned_data['quantidade']
+            data_desejada = form.cleaned_data['data_desejada']
+
+            if quantidade <= produto.quantidade:
+                produto.quantidade -= quantidade
+                produto.save()
+                
+                Reserva.objects.create(
+                    usuario=request.user,
+                    produto=produto,
+                    quantidade=quantidade,
+                    data_desejada=data_desejada
+                )
+                
+                messages.success(request, f'Reserva de {quantidade} unidades de {produto.nome} para {data_desejada} realizada com sucesso!')
+                return redirect('reservar')
+            else:
+                messages.error(request, f'A quantidade desejada é maior do que a quantidade disponível ({produto.quantidade}).')
+    else:
+        form = ReservaForm()
+
+    return render(request, 'reservar.html', {'form': form})
 
 # |Tela Suporte
 @login_required
