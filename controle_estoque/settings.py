@@ -138,12 +138,13 @@ MESSAGE_TAGS = {
     constants.WARNING: 'alert-warning',
 }
 
+# settings.py
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.example.com'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = False 
+EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'extreme.revolution18@gmail.com'
 EMAIL_HOST_PASSWORD = 'ylndblxphzfsfffp'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-OPENAI_API_KEY = 'Coloque sua API!!!'
+
