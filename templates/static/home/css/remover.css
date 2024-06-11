@@ -1,11 +1,77 @@
-.title {
-    font-size: 24px;
-    color: #333;
+/* Centraliza o container */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+h2 {
     margin-bottom: 20px;
 }
 
-.content {
+form {
+    width: 100%;
+    max-width: 800px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 15px); /* Largura de 50% menos o espaçamento */
+}
+
+input[type="text"],
+textarea,
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #4CAF50; /* Cor da borda */
+    border-radius: 5px;
     font-size: 16px;
-    color: #666;
-    line-height: 1.6;
+}
+
+button.btn-submit {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #4CAF50; /* Cor esverdeada */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px; /* Espaço acima do botão */
+}
+
+button.btn-submit:hover {
+    background-color: #45a049; /* Cor esverdeada mais escura */
+}
+
+.messages {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.message.success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.message.error {
+    background-color: #f44336;
+    color: white;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
 }

@@ -7,6 +7,7 @@
 {% block 'head' %}
     <link rel="stylesheet" href="{% static 'home/css/entre_em_contato.css' %}">
     <link rel="stylesheet" href="{% static 'home/css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/chat.css' %}">
 {% endblock 'head' %}
 
 {% block 'body' %}
@@ -41,40 +42,98 @@
         </div>
     </nav>
 
-    <div class="container">
-        <h1>Entre em Contato</h1>
-        <p>Utilize o chat abaixo para tirar dúvidas sobre as funcionalidades do site.</p>
-    
-        <form method="post" action="{% url 'entre_em_contato' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="user_input" class="form-label">Sua pergunta:</label>
-                <input type="text" class="form-control" id="user_input" name="user_input" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
-        </form>
-    
-        {% if user_input %}
-        <div class="mt-4">
-            <h2>Você:</h2>
-            <p>{{ user_input }}</p>
-            <h2>Bot:</h2>
-            <p>{{ bot_response }}</p>
-    
-            <form method="post" action="{% url 'entre_em_contato' %}">
-                {% csrf_token %}
-                <input type="hidden" name="send_to_support" value="true">
-                <div class="mb-3">
-                    <label for="user_email" class="form-label">Seu Email:</label>
-                    <input type="email" class="form-control" id="user_email" name="user_email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="message" class="form-label">Mensagem:</label>
-                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Enviar para Suporte</button>
-            </form>
+    <div class="chat-container">
+
+        <div class="chat-messages" id="chat-messages"></div>
+
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Digite sua mensagem...">
+            <button onclick="sendMessage()">Enviar</button>
         </div>
-        {% endif %}
+
+        <div class="support-box" id="support-box">
+            <h3>Deseja entrar em contato com o suporte?</h3>
+            <button onclick="showSupportForm()">Sim</button>
+            <button onclick="closeChat()">Não</button>
+        </div>
+
+        <div class="support-form" id="support-form" style="display: none;">
+            <h3>Enviar E-mail para Suporte</h3>
+            <input type="email" id="user-email" placeholder="Seu e-mail">
+            <textarea id="user-message" placeholder="Sua dúvida"></textarea>
+            <button onclick="sendSupportEmail()">Enviar</button>
+        </div>
     </div>
+    
+    <script>
+        var csrfToken = '{{ csrf_token }}';
+    
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            var chatMessages = document.getElementById('chat-messages');
+    
+            var userMessage = document.createElement('div');
+            userMessage.classList.add('chat-message', 'user');
+            userMessage.innerHTML = `<div class="message-content">${userInput}</div>`;
+            chatMessages.appendChild(userMessage);
+    
+            document.getElementById('user-input').value = '';
+    
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+            fetch('{% url 'entre_em_contato' %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ user_input: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                var botMessage = document.createElement('div');
+                botMessage.classList.add('chat-message', 'bot');
+                botMessage.innerHTML = `<div class="message-content">${data.bot_response}</div>`;
+                chatMessages.appendChild(botMessage);
+    
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+                if (data.end_conversation) {
+                    document.getElementById('support-box').style.display = 'flex';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    
+        function showSupportForm() {
+            document.getElementById('support-form').style.display = 'block';
+        }
+    
+        function closeChat() {
+            document.getElementById('chat-messages').innerHTML = '';
+            document.getElementById('support-box').style.display = 'none';
+        }
+    
+        function sendSupportEmail() {
+            var userEmail = document.getElementById('user-email').value;
+            var userMessage = document.getElementById('user-message').value;
+    
+            fetch('{% url 'entre_em_contato' %}', {  // Use a template tag para obter a URL correta
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ user_email: userEmail, message: userMessage, send_to_support: true })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('E-mail enviado com sucesso!');
+                } else {
+                    throw new Error('Erro ao enviar o e-mail.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 {% endblock 'body' %}

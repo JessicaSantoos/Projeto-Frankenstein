@@ -39,4 +39,28 @@
             </div>
         </div>
     </nav>
+
+    <div class="container">
+        <h2>Remover Produto</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_produto"><strong>Produto:</strong></label>
+                {{ form.produto }}
+            </div>
+            <div class="form-group">
+                <label for="id_quantidade"><strong>Quantidade a ser removida:</strong></label>
+                {{ form.quantidade }}
+            </div>
+            <button type="submit" class="btn-submit">Remover Produto</button>
+        </form>
+    
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
 {% endblock 'body' %}

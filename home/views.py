@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Produto
 from django.core.mail import send_mail
 from django.contrib import messages
 import openai
 from django.conf import settings
-from openai.error import RateLimitError, OpenAIError
-import socket
+from .forms import ProdutoForm
+from .forms import RemoverProdutoForm
 
-# Configure a API key do OpenAI
 openai.api_key = settings.OPENAI_API_KEY
 
 # |Tela HOME (NavBar)
@@ -17,8 +15,7 @@ openai.api_key = settings.OPENAI_API_KEY
 def home_view(request):
     return render(request, 'home/navbar.html')
 
-# |Tela Estoque de Prosdutos
-@ensure_csrf_cookie
+# |Tela Estoque de Produtos
 @login_required
 def estoque_view(request):
     produtos = Produto.objects.all()
@@ -27,16 +24,62 @@ def estoque_view(request):
 # |Tela Cadastro de Produtos
 @login_required
 def cadastrar_view(request):
-    return render(request, 'cadastrar.html')
+    if request.method == 'POST':
+        form = ProdutoForm(request.POST)
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            quantidade = form.cleaned_data['quantidade']
+            
+            # Verifica se o produto já existe no estoque
+            produto_existente = Produto.objects.filter(nome=nome).first()
+            if produto_existente:
+                produto_existente.quantidade += quantidade
+                produto_existente.save()
+                messages.success(request, f'{quantidade} unidades de {nome} adicionadas ao estoque.')
+            else:
+                form.save()
+                messages.success(request, 'Produto cadastrado com sucesso!')
+        else:
+            messages.error(request, 'Erro ao cadastrar produto. Verifique os dados e tente novamente.')
+    else:
+        form = ProdutoForm()
+    
+    return render(request, 'cadastrar.html', {'form': form})
 
 # |Tela Remover Produtos
 @login_required
 def remover_view(request):
-    return render(request, 'remover.html')
+    produtos = Produto.objects.all()
+
+    if request.method == 'POST':
+        form = RemoverProdutoForm(request.POST)
+        if form.is_valid():
+            produto_id = form.cleaned_data['produto']
+            quantidade = form.cleaned_data['quantidade']
+
+            produto = Produto.objects.get(pk=produto_id)
+
+            # Verifica se a quantidade a ser removida é menor ou igual à quantidade disponível no estoque
+            if quantidade <= produto.quantidade:
+                produto.quantidade -= quantidade
+                produto.save()
+
+                # Se a quantidade do produto for zero após a remoção, exclua o produto do banco de dados
+                if produto.quantidade == 0:
+                    produto.delete()
+                    messages.success(request, f'{quantidade} unidades de {produto.nome} removidas do estoque. O produto foi completamente removido.')
+                else:
+                    messages.success(request, f'{quantidade} unidades de {produto.nome} removidas do estoque.')
+                return redirect('remover')
+            else:
+                messages.error(request, f'A quantidade a ser removida é maior do que a quantidade disponível ({produto.quantidade}).')
+    else:
+        form = RemoverProdutoForm()
+
+    return render(request, 'remover.html', {'produtos': produtos, 'form': form})
 
 # |Tela Suporte
 @login_required
-@ensure_csrf_cookie
 def entre_em_contato_view(request):
     bot_response = ""
     user_input = ""
@@ -55,9 +98,9 @@ def entre_em_contato_view(request):
 
             bot_response = response.choices[0].message['content'].strip()
 
-        except RateLimitError:
+        except openai.error.RateLimitError:
             bot_response = "Você excedeu seu limite de uso da API. Por favor, tente novamente mais tarde ou verifique seu plano e detalhes de faturamento."
-        except OpenAIError as e:
+        except openai.error.OpenAIError as e:
             bot_response = f"Erro ao acessar a API do OpenAI: {e}"
         except Exception as e:
             bot_response = f"Ocorreu um erro inesperado: {e}"
@@ -132,3 +175,5 @@ def solicitar_duvida_view(request):
 def get_site_info():
     with open('site_info.txt', 'r') as file:
         return file.read()
+
+
