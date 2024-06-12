@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Produto, Reserva
+from .models import Produto, Reserva, Cadastro
+from django.db.models import Count
 from .forms import ReservaForm
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -116,6 +117,33 @@ def reservar_view(request):
         form = ReservaForm()
 
     return render(request, 'reservar.html', {'form': form})
+
+# | Tela de Grafico
+def grafico_view(request):
+    tipo_movimentacao = request.GET.get('tipo', 'cadastros')  # Alterado para 'cadastros' por padrão
+    
+    if tipo_movimentacao == 'cadastros':
+        dados = Produto.objects.annotate(total_movimentacao=Count('cadastro')).order_by('-total_movimentacao')[:10]
+        titulo = 'Produtos Mais Cadastrados'
+    elif tipo_movimentacao == 'reservas':
+        dados = Produto.objects.annotate(total_movimentacao=Count('reserva')).order_by('-total_movimentacao')[:10]
+        titulo = 'Produtos Mais Reservados'
+    else:
+        # Se o tipo de movimentação não for nem 'cadastros' nem 'reservas', defina 'dados' como uma lista vazia
+        dados = []
+        titulo = 'Tipo de movimentação inválido'
+
+    produtos = [produto.nome for produto in dados]
+    totais = [produto.total_movimentacao for produto in dados]
+
+    context = {
+        'produtos': produtos,
+        'totais': totais,
+        'titulo': titulo,
+    }
+    return render(request, 'grafico.html', context)
+
+
 
 # |Tela Suporte
 @login_required

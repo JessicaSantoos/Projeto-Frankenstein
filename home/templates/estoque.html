@@ -21,7 +21,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'estoque' %}">Estoque</a>
+                        <a class="nav-link" href="{% url 'estoque' %}">Estoque de Produtos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'reservas' %}">Produtos Reservados</a>
@@ -36,6 +36,9 @@
                         <a class="nav-link" href="{% url 'reservar' %}">Reservar Produto</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'grafico' %}">Gráfico de Movimentações</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'entre_em_contato' %}">Entre em Contato</a>
                     </li>
                 </ul>
@@ -48,16 +51,20 @@
             <thead>
                 <tr>
                     <th scope="col">Nome do Produto</th>
-                    <th scope="col">Descrição</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Codigo</th>
                     <th scope="col">Quantidade</th>
+                    <th scope="col">Data</th>
                 </tr>
             </thead>
             <tbody>
                 {% for produto in produtos %}
                 <tr>
                     <td>{{ produto.nome }}</td>
-                    <td>{{ produto.descricao }}</td>
+                    <td>{{ produto.tipo }}</td>
+                    <td>{{ produto.codigo }}</td>
                     <td>{{ produto.quantidade }}</td>
+                    <td>{{ produto.data_aquisicao }}</td>
                 </tr>
                 {% empty %}
                 <tr>

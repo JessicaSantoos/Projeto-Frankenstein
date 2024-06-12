@@ -5,7 +5,7 @@ from .models import Reserva
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'descricao', 'quantidade']
+        fields = ['nome', 'codigo', 'tipo', 'data_aquisicao', 'quantidade']
 
 class RemoverProdutoForm(forms.Form):
     quantidade = forms.IntegerField(min_value=1, label='Quantidade a ser removida')

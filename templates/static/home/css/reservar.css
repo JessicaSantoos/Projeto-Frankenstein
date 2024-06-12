@@ -9,7 +9,7 @@
 }
 
 h2 {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 form {
@@ -20,18 +20,16 @@ form {
 .form-row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between; /* Alinhamento entre os itens */
-    gap: 18px; /* Espaçamento entre os itens */
+    justify-content: center;
+    gap: 15px; /* Espaçamento entre os itens */
+    width: 100%;
     margin-bottom: 15px;
 }
 
 .form-group {
-    flex: 1; /* Expandir para ocupar o espaço disponível */
-}
-
-label {
-    font-weight: bold;
-    margin-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 15px); /* Largura de 50% menos o espaçamento */
 }
 
 input[type="text"],
@@ -84,4 +82,9 @@ button.btn-submit:hover {
 .message.error {
     background-color: #f44336;
     color: white;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
 }

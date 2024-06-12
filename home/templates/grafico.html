@@ -2,12 +2,13 @@
 {% load static %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static 'home/css/cadastrar.css' %}">
     <link rel="stylesheet" href="{% static 'home/css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/grafico.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock 'head' %}
 
 {% block 'body' %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'login' %}">
             <img src="{% static 'geral/img/logo2.gif' %}" alt="Logo" width="50" height="50" class="d-inline-block align-top">
@@ -44,41 +45,42 @@
 </nav>
 
 <div class="container">
-    <h2>Cadastrar Produto</h2>
-    <form method="POST">
-
-        {% csrf_token %}
-
-        <div class="form-group">
-            <label for="id_nome">Nome do Produto:</label>
-            {{ form.nome }}
+    <h2>{{ titulo }}</h2>
+    <form method="GET" class="filter-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="tipo">Tipo de Movimentação:</label>
+                <select name="tipo" id="tipo">
+                    <option value="reservas" {% if request.GET.tipo == 'reservas' %}selected{% endif %}>Reservas</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit">Filtrar</button>
         </div>
-        <div class="form-group">
-            <label for="id_codigo">Código do Produto:</label>
-            {{ form.codigo }}
-        </div>
-        <div class="form-group">
-            <label for="id_tipo">Tipo de Produto:</label>
-            {{ form.tipo }}
-        </div>
-        <div class="form-group">
-            <label for="id_data_aquisicao">Data de Aquisição:</label>
-            {{ form.data_aquisicao }}
-        </div>
-        <div class="form-group">
-            <label for="id_quantidade">Quantidade:</label>
-            {{ form.quantidade }}
-        </div>
-        <br>
-        <button type="submit" class="btn btn-primary">Cadastrar Produto</button>
     </form>
+    <canvas id="graficoCanvas" width="400" height="200"></canvas>
+</div>
 
-    <script>
-        {% if messages %}
-            {% for message in messages %}
-                alert("{{ message }}");
-            {% endfor %}
-        {% endif %}
-    </script>
-
+<script>
+    var ctx = document.getElementById('graficoCanvas').getContext('2d');
+    var grafico = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ produtos|safe }},
+            datasets: [{
+                label: '{{ titulo }}',
+                data: {{ totais|safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 {% endblock 'body' %}
