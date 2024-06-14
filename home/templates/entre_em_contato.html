@@ -50,12 +50,12 @@
 
     <div class="chat-container">
 
-        <div class="chat-messages" id="chat-messages"></div>
+        <!-- <div class="chat-messages" id="chat-messages"></div>
 
         <div class="chat-input">
             <input type="text" id="user-input" placeholder="Digite sua mensagem...">
             <button onclick="sendMessage()">Enviar</button>
-        </div>
+        </div>-->
 
         <div class="support-box" id="support-box">
             <h3>Deseja entrar em contato com o suporte?</h3>
@@ -124,7 +124,7 @@
             var userEmail = document.getElementById('user-email').value;
             var userMessage = document.getElementById('user-message').value;
     
-            fetch('{% url 'entre_em_contato' %}', {  // Use a template tag para obter a URL correta
+            fetch('{% url 'entre_em_contato' %}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

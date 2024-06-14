@@ -242,5 +242,3 @@ def solicitar_duvida_view(request):
 def get_site_info():
     with open('site_info.txt', 'r') as file:
         return file.read()
-
-

@@ -147,4 +147,4 @@ EMAIL_HOST_USER = 'extreme.revolution18@gmail.com'
 EMAIL_HOST_PASSWORD = 'ylndblxphzfsfffp'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-
+OPENAI_API_KEY = 'sk-proj-avXpBN9dpjuoWlM70nPuT3BlbkFJX9CGnjBww1e6M4SDuD3R'
